@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MCB.Core.Infra.CrossCutting.Time;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MCB.Tests.Fixtures
 {
@@ -16,6 +17,8 @@ namespace MCB.Tests.Fixtures
         // Private Methods
         private void Initialize()
         {
+            TimeProvider.InjectedUtcNow = DateTimeOffset.UtcNow;
+
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             _serviceProvider = serviceCollection.BuildServiceProvider();
