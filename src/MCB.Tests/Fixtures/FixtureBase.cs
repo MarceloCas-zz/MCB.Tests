@@ -1,4 +1,4 @@
-﻿using MCB.Core.Infra.CrossCutting.Time;
+﻿using MCB.Core.Infra.CrossCutting.DateTime;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MCB.Tests.Fixtures
@@ -17,7 +17,9 @@ namespace MCB.Tests.Fixtures
         // Private Methods
         private void Initialize()
         {
-            TimeProvider.InjectedUtcNow = DateTimeOffset.UtcNow;
+            DateTimeProvider.GetDateCustomFunction = new Func<DateTimeOffset>(() => 
+                new DateTimeOffset(new DateTime(2022, 01, 01, 1, 1, 1, DateTimeKind.Utc))
+            );
 
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);

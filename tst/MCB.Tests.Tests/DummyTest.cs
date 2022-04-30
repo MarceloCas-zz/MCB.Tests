@@ -1,7 +1,9 @@
 using FluentAssertions;
+using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Tests.Tests.Fixtures;
 using MCB.Tests.Tests.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -30,10 +32,22 @@ namespace MCB.Tests.Tests
         }
 
         [Fact]
-        public void FixtureBase_Should_Have_DependecyIjection_Configured()
+        public void FixtureBase_Should_Have_DependecyInjection_Configured()
         {
             _fixture.Should().NotBeNull();
             _fixture.CreateScope().ServiceProvider.GetService<IDummyService>().Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task FixtureBase_Should_Set_DateTimeProvider_GetDateCustomFunction()
+        {
+            // Arrang and Act
+            var firstDate = DateTimeProvider.GetDate();
+            await Task.Delay(500);
+            var secondDate = DateTimeProvider.GetDate();
+
+            // Assert
+            firstDate.Should().Be(secondDate);
         }
     }
 }
