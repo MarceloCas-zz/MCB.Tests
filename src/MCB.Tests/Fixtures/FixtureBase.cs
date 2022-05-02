@@ -8,6 +8,11 @@ namespace MCB.Tests.Fixtures
         // Fields
         private IServiceProvider _serviceProvider;
 
+        // Properties
+        public Guid TenantId { get; }
+        public string ExecutionUser { get; }
+        public string SourcePlatform { get; }
+
         // Constructors
         protected FixtureBase()
         {
@@ -30,6 +35,10 @@ namespace MCB.Tests.Fixtures
         protected abstract void ConfigureServices(ServiceCollection services);
 
         // Public Methods
+        public static Guid GenerateNewTenantId() => Guid.NewGuid();
+        public static string GenerateNewExecutionUser() => $"{nameof(ExecutionUser)} {Guid.NewGuid()}";
+        public static string GenerateNewSourcePlatform() => $"{nameof(SourcePlatform)} {Guid.NewGuid()}";
+
         public IServiceScope CreateScope()
         {
             return _serviceProvider.CreateScope();
