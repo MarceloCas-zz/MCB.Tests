@@ -46,7 +46,7 @@ namespace MCB.Tests
 
             domainEntity.RegistryVersion.Should().Be(DateTimeProvider.GetDate());
         }
-        protected void ValidateAfterRegisterModification(
+        protected static void ValidateAfterRegisterModification(
             DomainEntityBase domainEntityBeforeModification,
             DomainEntityBase domainEntityAfterModification,
             string executionUser,
