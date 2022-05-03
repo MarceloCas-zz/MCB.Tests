@@ -5,6 +5,7 @@ using MCB.Tests.Tests.DomainEntities;
 using MCB.Tests.Tests.Fixtures;
 using MCB.Tests.Tests.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -27,10 +28,14 @@ namespace MCB.Tests.Tests
             _fixture = fixture;
         }
 
+        
         [Fact]
-        public void TestBase_Should_Have_TestOutputHelper_Instance()
+        public void FixtureBase_Should_Correctly_Initialized()
         {
-            TestOutputHelper.Should().NotBeNull();
+            // Assert
+            _fixture.TenantId.Should().NotBe(Guid.Empty);
+            _fixture.ExecutionUser.Should().NotBeNull();
+            _fixture.SourcePlatform.Should().NotBeNull();
         }
 
         [Fact]
@@ -41,20 +46,29 @@ namespace MCB.Tests.Tests
         }
 
         [Fact]
+        public void TestBase_Should_Have_TestOutputHelper_Instance()
+        {
+            TestOutputHelper.Should().NotBeNull();
+        }
+
+        [Fact]
         public void TestBase_Should_SetNewDateForDateTimeProvider()
         {
             // Arrange and Act
-            GenerateNewDateForDateTimeProvider();
             var date1 = DateTimeProvider.GetDate();
-            var date2 = DateTimeProvider.GetDate();
             GenerateNewDateForDateTimeProvider();
+            var date2 = DateTimeProvider.GetDate();
             var date3 = DateTimeProvider.GetDate();
+            GenerateNewDateForDateTimeProvider();
             var date4 = DateTimeProvider.GetDate();
+            var date5 = DateTimeProvider.GetDate();
 
             // Assert
-            date1.Should().Be(date2);
-            date3.Should().Be(date4);
-            date1.Should().NotBe(date3);
+            date1.Should().NotBe(date2);
+            date1.Should().NotBe(date4);
+            date2.Should().Be(date3);
+            date4.Should().Be(date5);
+            date2.Should().NotBe(date4);
         }
 
         [Fact]

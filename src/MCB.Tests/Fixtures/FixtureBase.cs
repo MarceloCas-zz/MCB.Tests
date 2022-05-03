@@ -8,7 +8,6 @@ namespace MCB.Tests.Fixtures
         // Fields
         private IServiceProvider _serviceProvider;
 
-        // Properties
         public Guid TenantId { get; }
         public string ExecutionUser { get; }
         public string SourcePlatform { get; }
@@ -17,6 +16,10 @@ namespace MCB.Tests.Fixtures
         protected FixtureBase()
         {
             Initialize();
+
+            TenantId = GenerateNewTenantId();
+            ExecutionUser = GenerateNewExecutionUser();
+            SourcePlatform = GenerateNewSourcePlatform();
         }
 
         // Private Methods
