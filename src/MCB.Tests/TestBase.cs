@@ -28,7 +28,7 @@ namespace MCB.Tests
                 () => _lastDateTimeOffsetForDateTimeProvider
             );
         }
-        protected static void ValidateAfterRegisterNewOperation(
+        protected static void ValidateAfterRegisterNew(
             DomainEntityBase domainEntity,
             string executionUser,
             string sourcePlatform

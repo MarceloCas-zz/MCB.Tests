@@ -98,7 +98,7 @@ namespace MCB.Tests.Tests
             );
 
             // Assert
-            ValidateAfterRegisterNewOperation(dummyDomainEntity, executionUser, sourcePlatform);
+            ValidateAfterRegisterNew(dummyDomainEntity, executionUser, sourcePlatform);
         }
 
         [Fact]
