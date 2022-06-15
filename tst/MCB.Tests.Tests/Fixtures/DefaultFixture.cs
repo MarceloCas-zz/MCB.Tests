@@ -4,20 +4,19 @@ using MCB.Tests.Tests.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace MCB.Tests.Tests.Fixtures
-{
-    [CollectionDefinition(nameof(DefaultFixture))]
-    public class DefaultFixtureCollection
-        : ICollectionFixture<DefaultFixture>
-    {
+namespace MCB.Tests.Tests.Fixtures;
 
-    }
-    public class DefaultFixture
-        : FixtureBase
+[CollectionDefinition(nameof(DefaultFixture))]
+public class DefaultFixtureCollection
+    : ICollectionFixture<DefaultFixture>
+{
+
+}
+public class DefaultFixture
+    : FixtureBase
+{
+    protected override void ConfigureServices(ServiceCollection services)
     {
-        protected override void ConfigureServices(ServiceCollection services)
-        {
-            services.AddScoped<IDummyService, DummyService>();
-        }
+        services.AddScoped<IDummyService, DummyService>();
     }
 }

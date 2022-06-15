@@ -3,71 +3,70 @@ using MCB.Core.Domain.Entities;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using Xunit.Abstractions;
 
-namespace MCB.Tests
+namespace MCB.Tests;
+
+public abstract class TestBase
 {
-    public abstract class TestBase
+    // Fields
+    private DateTimeOffset _lastDateTimeOffsetForDateTimeProvider;
+
+    // Properties
+    protected ITestOutputHelper TestOutputHelper { get; }
+
+    // Constructors
+    protected TestBase(ITestOutputHelper testOutputHelper)
     {
-        // Fields
-        private DateTimeOffset _lastDateTimeOffsetForDateTimeProvider;
+        TestOutputHelper = testOutputHelper;
+    }
 
-        // Properties
-        protected ITestOutputHelper TestOutputHelper { get; }
+    // Protected Methods
+    public void GenerateNewDateForDateTimeProvider()
+    {
+        _lastDateTimeOffsetForDateTimeProvider = DateTimeOffset.UtcNow;
 
-        // Constructors
-        protected TestBase(ITestOutputHelper testOutputHelper)
-        {
-            TestOutputHelper = testOutputHelper;
-        }
+        DateTimeProvider.GetDateCustomFunction = new Func<DateTimeOffset>(
+            () => _lastDateTimeOffsetForDateTimeProvider
+        );
+    }
+    protected static void ValidateAfterRegisterNew(
+        DomainEntityBase domainEntity,
+        string executionUser,
+        string sourcePlatform
+    )
+    {
+        domainEntity.Id.Should().NotBe(Guid.Empty);
 
-        // Protected Methods
-        public void GenerateNewDateForDateTimeProvider()
-        {
-            _lastDateTimeOffsetForDateTimeProvider = DateTimeOffset.UtcNow;
+        domainEntity.AuditableInfo.CreatedAt.Should().Be(DateTimeProvider.GetDate());
+        domainEntity.AuditableInfo.CreatedBy.Should().Be(executionUser);
 
-            DateTimeProvider.GetDateCustomFunction = new Func<DateTimeOffset>(
-                () => _lastDateTimeOffsetForDateTimeProvider
-            );
-        }
-        protected static void ValidateAfterRegisterNew(
-            DomainEntityBase domainEntity,
-            string executionUser,
-            string sourcePlatform
-        )
-        {
-            domainEntity.Id.Should().NotBe(Guid.Empty);
+        domainEntity.AuditableInfo.LastUpdatedAt.Should().BeNull();
+        domainEntity.AuditableInfo.LastUpdatedBy.Should().BeNull();
 
-            domainEntity.AuditableInfo.CreatedAt.Should().Be(DateTimeProvider.GetDate());
-            domainEntity.AuditableInfo.CreatedBy.Should().Be(executionUser);
+        domainEntity.AuditableInfo.LastSourcePlatform.Should().Be(sourcePlatform);
 
-            domainEntity.AuditableInfo.LastUpdatedAt.Should().BeNull();
-            domainEntity.AuditableInfo.LastUpdatedBy.Should().BeNull();
+        domainEntity.RegistryVersion.Should().Be(DateTimeProvider.GetDate());
+    }
+    protected static void ValidateAfterRegisterModification(
+        DomainEntityBase domainEntityBeforeModification,
+        DomainEntityBase domainEntityAfterModification,
+        string executionUser,
+        string sourcePlatform
+    )
+    {
+        domainEntityAfterModification.Should().NotBeSameAs(domainEntityBeforeModification);
+        domainEntityAfterModification.Id.Should().Be(domainEntityBeforeModification.Id);
 
-            domainEntity.AuditableInfo.LastSourcePlatform.Should().Be(sourcePlatform);
+        domainEntityAfterModification.AuditableInfo.Should().NotBeSameAs(domainEntityBeforeModification.AuditableInfo);
 
-            domainEntity.RegistryVersion.Should().Be(DateTimeProvider.GetDate());
-        }
-        protected static void ValidateAfterRegisterModification(
-            DomainEntityBase domainEntityBeforeModification,
-            DomainEntityBase domainEntityAfterModification,
-            string executionUser,
-            string sourcePlatform
-        )
-        {
-            domainEntityAfterModification.Should().NotBeSameAs(domainEntityBeforeModification);
-            domainEntityAfterModification.Id.Should().Be(domainEntityBeforeModification.Id);
+        domainEntityAfterModification.AuditableInfo.CreatedAt.Should().Be(domainEntityBeforeModification.AuditableInfo.CreatedAt);
+        domainEntityAfterModification.AuditableInfo.CreatedBy.Should().Be(domainEntityBeforeModification.AuditableInfo.CreatedBy);
 
-            domainEntityAfterModification.AuditableInfo.Should().NotBeSameAs(domainEntityBeforeModification.AuditableInfo);
+        domainEntityAfterModification.AuditableInfo.LastUpdatedAt.Should().BeAfter(domainEntityAfterModification.AuditableInfo.CreatedAt);
+        domainEntityAfterModification.AuditableInfo.LastUpdatedAt.Should().Be(DateTimeProvider.GetDate());
+        domainEntityAfterModification.AuditableInfo.LastUpdatedBy.Should().Be(executionUser);
 
-            domainEntityAfterModification.AuditableInfo.CreatedAt.Should().Be(domainEntityBeforeModification.AuditableInfo.CreatedAt);
-            domainEntityAfterModification.AuditableInfo.CreatedBy.Should().Be(domainEntityBeforeModification.AuditableInfo.CreatedBy);
+        domainEntityAfterModification.AuditableInfo.LastSourcePlatform.Should().Be(sourcePlatform);
 
-            domainEntityAfterModification.AuditableInfo.LastUpdatedAt.Should().BeAfter(domainEntityAfterModification.AuditableInfo.CreatedAt);
-            domainEntityAfterModification.AuditableInfo.LastUpdatedAt.Should().Be(DateTimeProvider.GetDate());
-            domainEntityAfterModification.AuditableInfo.LastUpdatedBy.Should().Be(executionUser);
-
-            domainEntityAfterModification.AuditableInfo.LastSourcePlatform.Should().Be(sourcePlatform);
-
-            domainEntityAfterModification.RegistryVersion.Should().BeAfter(domainEntityBeforeModification.RegistryVersion);
-        }
+        domainEntityAfterModification.RegistryVersion.Should().BeAfter(domainEntityBeforeModification.RegistryVersion);
     }
 }

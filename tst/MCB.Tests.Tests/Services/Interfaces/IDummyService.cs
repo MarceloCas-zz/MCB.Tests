@@ -1,6 +1,5 @@
-﻿namespace MCB.Tests.Tests.Services.Interfaces
+﻿namespace MCB.Tests.Tests.Services.Interfaces;
+
+public interface IDummyService
 {
-    public interface IDummyService
-    {
-    }
 }

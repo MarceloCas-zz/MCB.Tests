@@ -1,50 +1,49 @@
 ﻿using MCB.Core.Infra.CrossCutting.DateTime;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MCB.Tests.Fixtures
+namespace MCB.Tests.Fixtures;
+
+public abstract class FixtureBase
 {
-    public abstract class FixtureBase
+    // Fields
+    private IServiceProvider _serviceProvider;
+
+    public Guid TenantId { get; }
+    public string ExecutionUser { get; }
+    public string SourcePlatform { get; }
+
+    // Constructors
+    protected FixtureBase()
     {
-        // Fields
-        private IServiceProvider _serviceProvider;
+        Initialize();
 
-        public Guid TenantId { get; }
-        public string ExecutionUser { get; }
-        public string SourcePlatform { get; }
+        TenantId = GenerateNewTenantId();
+        ExecutionUser = GenerateNewExecutionUser();
+        SourcePlatform = GenerateNewSourcePlatform();
+    }
 
-        // Constructors
-        protected FixtureBase()
-        {
-            Initialize();
+    // Private Methods
+    private void Initialize()
+    {
+        DateTimeProvider.GetDateCustomFunction = new Func<DateTimeOffset>(() => 
+            new DateTimeOffset(new DateTime(2022, 01, 01, 1, 1, 1, DateTimeKind.Utc))
+        );
 
-            TenantId = GenerateNewTenantId();
-            ExecutionUser = GenerateNewExecutionUser();
-            SourcePlatform = GenerateNewSourcePlatform();
-        }
+        var serviceCollection = new ServiceCollection();
+        ConfigureServices(serviceCollection);
+        _serviceProvider = serviceCollection.BuildServiceProvider();
+    }
 
-        // Private Methods
-        private void Initialize()
-        {
-            DateTimeProvider.GetDateCustomFunction = new Func<DateTimeOffset>(() => 
-                new DateTimeOffset(new DateTime(2022, 01, 01, 1, 1, 1, DateTimeKind.Utc))
-            );
+    // Abstract Methods
+    protected abstract void ConfigureServices(ServiceCollection services);
 
-            var serviceCollection = new ServiceCollection();
-            ConfigureServices(serviceCollection);
-            _serviceProvider = serviceCollection.BuildServiceProvider();
-        }
+    // Public Methods
+    public static Guid GenerateNewTenantId() => Guid.NewGuid();
+    public static string GenerateNewExecutionUser() => $"{nameof(ExecutionUser)} {Guid.NewGuid()}";
+    public static string GenerateNewSourcePlatform() => $"{nameof(SourcePlatform)} {Guid.NewGuid()}";
 
-        // Abstract Methods
-        protected abstract void ConfigureServices(ServiceCollection services);
-
-        // Public Methods
-        public static Guid GenerateNewTenantId() => Guid.NewGuid();
-        public static string GenerateNewExecutionUser() => $"{nameof(ExecutionUser)} {Guid.NewGuid()}";
-        public static string GenerateNewSourcePlatform() => $"{nameof(SourcePlatform)} {Guid.NewGuid()}";
-
-        public IServiceScope CreateScope()
-        {
-            return _serviceProvider.CreateScope();
-        }
+    public IServiceScope CreateScope()
+    {
+        return _serviceProvider.CreateScope();
     }
 }
