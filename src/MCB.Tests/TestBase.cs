@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using MCB.Core.Domain.Entities;
+using MCB.Core.Domain.Entities.DomainEntitiesBase;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using Xunit.Abstractions;
 

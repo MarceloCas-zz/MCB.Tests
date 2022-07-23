@@ -1,4 +1,4 @@
-﻿using MCB.Core.Domain.Entities;
+﻿using MCB.Core.Domain.Entities.DomainEntitiesBase;
 using System;
 
 namespace MCB.Tests.Tests.DomainEntities;
