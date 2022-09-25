@@ -4,7 +4,6 @@ using MCB.Tests.Fixtures;
 using MCB.Tests.Tests.DomainEntities;
 using MCB.Tests.Tests.Fixtures;
 using MCB.Tests.Tests.Services.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -42,7 +41,7 @@ public class DummyTest
     public void FixtureBase_Should_Have_DependecyInjection_Configured()
     {
         _fixture.Should().NotBeNull();
-        _fixture.CreateScope().ServiceProvider.GetService<IDummyService>().Should().NotBeNull();
+        _fixture.CreateNewDependencyInjectionContainer().Resolve<IDummyService>().Should().NotBeNull();
     }
 
     [Fact]
