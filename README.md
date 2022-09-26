@@ -7,7 +7,7 @@ This project is a source code of [MCB.Tests](https://www.nuget.org/packages/MCB.
 ## Labels
 
 [![build-and-test](https://github.com/MarceloCas/MCB.Tests/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/MarceloCas/MCB.Tests/actions/workflows/build-and-test.yml)
-
+![Nuget](https://img.shields.io/nuget/v/MCB.Tests)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MarceloCas_MCB.Tests&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=MarceloCas_MCB.Tests)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=MarceloCas_MCB.Tests&metric=coverage)](https://sonarcloud.io/summary/new_code?id=MarceloCas_MCB.Tests)
