@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using MCB.Core.Domain.Entities.DomainEntitiesBase;
-using MCB.Core.Infra.CrossCutting.DateTime;
+using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using Xunit.Abstractions;
 
 namespace MCB.Tests;
@@ -8,27 +8,39 @@ namespace MCB.Tests;
 public abstract class TestBase
 {
     // Fields
-    private DateTimeOffset _lastDateTimeOffsetForDateTimeProvider;
+    private DateTimeOffset _currentDate;
 
     // Properties
     protected ITestOutputHelper TestOutputHelper { get; }
+    protected IDateTimeProvider DateTimeProvider { get; private set; }
 
     // Constructors
     protected TestBase(ITestOutputHelper testOutputHelper)
     {
         TestOutputHelper = testOutputHelper;
+
+        _currentDate = new DateTimeOffset(year: 2000, month: 1, day: 1, hour: 12, minute: 0, second: 0, offset: TimeSpan.Zero);
+        DateTimeProvider = CreateDateTimeProvider(_currentDate);
     }
+
+    // Protected Abstract Methods
+    protected abstract IDateTimeProvider CreateDateTimeProvider(DateTimeOffset currentDate);
 
     // Protected Methods
-    public void GenerateNewDateForDateTimeProvider()
-    {
-        _lastDateTimeOffsetForDateTimeProvider = DateTimeOffset.UtcNow;
 
-        DateTimeProvider.GetDateCustomFunction = new Func<DateTimeOffset>(
-            () => _lastDateTimeOffsetForDateTimeProvider
-        );
+    public void GenerateNewDateForDateTimeProvider(DateTimeOffset? newDate = null)
+    {
+        if (newDate is null)
+        {
+            var referenceDate = DateTimeProvider.GetDate().AddSeconds(1);
+            DateTimeProvider.ChangeGetDateCustomFunction(() => referenceDate);
+        }
+        else
+            DateTimeProvider.ChangeGetDateCustomFunction(() => newDate.Value);
+
+        _currentDate = DateTimeProvider.GetDate();
     }
-    protected static void ValidateAfterRegisterNew(
+    protected void ValidateAfterRegisterNew(
         DomainEntityBase domainEntity,
         string executionUser,
         string sourcePlatform
@@ -46,7 +58,7 @@ public abstract class TestBase
 
         domainEntity.RegistryVersion.Should().Be(DateTimeProvider.GetDate());
     }
-    protected static void ValidateAfterRegisterModification(
+    protected void ValidateAfterRegisterModification(
         DomainEntityBase domainEntityBeforeModification,
         DomainEntityBase domainEntityAfterModification,
         string executionUser,

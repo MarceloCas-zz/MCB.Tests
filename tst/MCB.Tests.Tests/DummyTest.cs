@@ -1,10 +1,12 @@
 using FluentAssertions;
+using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Tests.Fixtures;
 using MCB.Tests.Tests.DomainEntities;
 using MCB.Tests.Tests.Fixtures;
 using MCB.Tests.Tests.Services.Interfaces;
 using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -27,7 +29,16 @@ public class DummyTest
         _fixture = fixture;
     }
 
-    
+    // Protected Methods
+    protected override IDateTimeProvider CreateDateTimeProvider(DateTimeOffset currentDate)
+    {
+        var dateTimeProvider = new DateTimeProvider();
+
+        dateTimeProvider.ChangeGetDateCustomFunction(() => currentDate);
+
+        return dateTimeProvider;
+    }
+
     [Fact]
     public void FixtureBase_Should_Correctly_Initialized()
     {
@@ -90,7 +101,7 @@ public class DummyTest
         var sourcePlatform = FixtureBase.GenerateNewSourcePlatform();
 
         // Act
-        var dummyDomainEntity = new DummyDomainEntity().RegisterNew(
+        var dummyDomainEntity = new DummyDomainEntity(DateTimeProvider).RegisterNew(
             tenantId: FixtureBase.GenerateNewTenantId(),
             executionUser,
             sourcePlatform
@@ -109,7 +120,7 @@ public class DummyTest
 
         GenerateNewDateForDateTimeProvider();
 
-        var dummyDomainEntity = new DummyDomainEntity().RegisterNew(
+        var dummyDomainEntity = new DummyDomainEntity(DateTimeProvider).RegisterNew(
             tenantId: FixtureBase.GenerateNewTenantId(),
             executionUser,
             sourcePlatform
@@ -124,4 +135,5 @@ public class DummyTest
         // Assert
         ValidateAfterRegisterModification(clonedDummyDomainEntity, dummyDomainEntity, executionUser, sourcePlatform);
     }
+
 }
