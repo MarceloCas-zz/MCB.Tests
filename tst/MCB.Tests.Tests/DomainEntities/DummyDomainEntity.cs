@@ -1,6 +1,5 @@
 ﻿using MCB.Core.Domain.Entities.DomainEntitiesBase;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
-using MCB.Core.Infra.CrossCutting.DateTime;
 using System;
 
 namespace MCB.Tests.Tests.DomainEntities;

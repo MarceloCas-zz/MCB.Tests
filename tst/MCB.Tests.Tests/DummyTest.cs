@@ -1,12 +1,10 @@
 using FluentAssertions;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
-using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Tests.Fixtures;
 using MCB.Tests.Tests.DomainEntities;
 using MCB.Tests.Tests.Fixtures;
 using MCB.Tests.Tests.Services.Interfaces;
 using System;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;

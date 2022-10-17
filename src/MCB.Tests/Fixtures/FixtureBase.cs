@@ -1,5 +1,4 @@
-﻿using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
-using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
+﻿using MCB.Core.Infra.CrossCutting.DependencyInjection.Abstractions.Interfaces;
 
 namespace MCB.Tests.Fixtures;
 
